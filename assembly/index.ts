@@ -1,6 +1,10 @@
 import { Context, storage } from "near-sdk-as";
 
 export function setUserInfo(username: string, pubkey: string): void {
+	if (username.length < 3 || username.length > 18 || pubkey.length != 128) {
+		return;
+	}
+
 	const arr = new Array<string>(2);
 	arr[0] = Context.sender;
 	arr[1] = pubkey;
