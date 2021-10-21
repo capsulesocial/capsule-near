@@ -6,8 +6,6 @@ A repository to store NEAR smart contracts used by Capsule
 
 - [NEAR CLI](https://github.com/near/near-cli) - to deploy the smart contract
   - `npm install -g near-cli` (globally installs NEAR CLI)
-- [asbuild](https://github.com/AssemblyScript/asbuild) - to build the smart contract
-  - `npm install -g asbuild` (globally installs asbuild)
 
 ## Installation
 
@@ -17,7 +15,7 @@ A repository to store NEAR smart contracts used by Capsule
 
 ## Build Smart Contract
 
-To build the contract, run `asb build`. The .wasm file after successful build is located at: `build/release/capsule-near.wasm`
+To build the contract, run `yarn asb` or `yarn asb build`. The .wasm file after successful build is located at: `build/release/capsule-near.wasm`
 
 ## Deploy Smart Contract
 
