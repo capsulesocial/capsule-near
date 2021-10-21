@@ -1,8 +1,8 @@
 import { Context, storage } from "near-sdk-as";
 
-export function setUserInfo(username: string, pubkey: string): void {
+export function setUserInfo(username: string, pubkey: string): u8 {
 	if (username.length < 3 || username.length > 18 || pubkey.length != 128) {
-		return;
+		return 2;
 	}
 
 	const arr = new Array<string>(2);
@@ -12,12 +12,14 @@ export function setUserInfo(username: string, pubkey: string): void {
 	const val = storage.get<Array<string>>(username);
 	if (!val) {
 		storage.set<Array<string>>(username, arr);
-		return;
+		return 1;
 	}
 
 	if (val[0] == username) {
 		storage.set<Array<string>>(username, arr);
+		return 1;
 	}
+	return 3;
 }
 
 export function getUserInfo(username: string): Array<string> | null {
