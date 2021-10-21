@@ -15,7 +15,7 @@ export function setUserInfo(username: string): u8 {
 		return 1;
 	}
 
-	if (val[0] == username) {
+	if (val[0] == Context.sender) {
 		storage.set<Array<string>>(username, arr);
 		return 1;
 	}
