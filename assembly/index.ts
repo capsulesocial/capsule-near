@@ -1,8 +1,12 @@
 import { Context, storage } from "near-sdk-as";
 
 export function setUserInfo(username: string): u8 {
-	if (username.length < 3 || username.length > 18) {
+	if (username.length < 3) {
 		return 2;
+	}
+
+	if (username.length > 18) {
+		return 4;
 	}
 
 	const arr = new Array<string>(2);
