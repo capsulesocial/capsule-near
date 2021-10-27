@@ -29,3 +29,15 @@ If you want to deploy it on a named testnet or mainnet account, run:
 2. `near deploy --contractName=<your_NEAR_account_id> --keyPath=<absolute_path_to_near_credentials_file> --wasmFile=<wasm_file_to_deploy>`
 
 **Example**: `near deploy --contractName=dev-1627894343033-9726641 --keyPath=/home/tomash/.near-credentials/testnet/dev-1627894343033-9726641.json --wasmFile=./build/release/capsule-near.json`
+
+## Legend: return values from setUserInfo
+
+When a user registers their account on capsule, the client calls `setUserInfo` function of the contract. `setUserInfo` returns an integer between 1 and 5, where each integer means the following:
+
+| Return value | Description                                                                        |
+| :----------: | ---------------------------------------------------------------------------------- |
+|     `1`      | Successful user-info update / registration                                         |
+|     `2`      | Length of given username is less than the minimum permissible length = 3           |
+|     `3`      | Username already exists, and is owned by a different NEAR account                  |
+|     `4`      | Length of given username exceeds maximum permissible length = 18<br>               |
+|     `5`      | NEAR account associated with the transaction is already linked to another username |
