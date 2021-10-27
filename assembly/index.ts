@@ -1,4 +1,5 @@
-import { Context, storage } from "near-sdk-as";
+import { Context } from "near-sdk-as";
+import { userLookup, accountLookup } from "./model";
 
 export function setUserInfo(username: string): u8 {
 	if (username.length < 3) {
@@ -9,23 +10,39 @@ export function setUserInfo(username: string): u8 {
 		return 4;
 	}
 
-	const arr = new Array<string>(2);
-	arr[0] = Context.sender;
-	arr[1] = Context.senderPublicKey;
+	const sender = Context.sender;
+	if (accountLookup.get(sender)) {
+		return 5;
+	}
+	const publicKey = Context.senderPublicKey;
 
-	const val = storage.get<Array<string>>(username);
+	const val = userLookup.get(username);
 	if (!val) {
-		storage.set<Array<string>>(username, arr);
+		userLookup.set(username, [sender, publicKey]);
+		accountLookup.set(sender, username);
 		return 1;
 	}
 
-	if (val[0] == Context.sender) {
-		storage.set<Array<string>>(username, arr);
+	if (val[0] == sender) {
+		userLookup.set(username, [sender, publicKey]);
+		accountLookup.set(sender, username);
 		return 1;
 	}
 	return 3;
 }
 
 export function getUserInfo(username: string): Array<string> | null {
-	return storage.get<Array<string>>(username);
+	return userLookup.get(username);
+}
+
+export function getUsername(accountId: string): string | null {
+	return accountLookup.get(accountId);
+}
+
+export function getAccountInfo(accountId: string): Array<string> | null {
+	const username = getUsername(accountId);
+	if (username) {
+		return userLookup.get(username);
+	}
+	return null;
 }
