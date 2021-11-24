@@ -1,5 +1,5 @@
 import { Context } from "near-sdk-as";
-import { userLookup, accountLookup } from "./model";
+import { userLookup, accountLookup, privateSub } from "./model";
 
 export function setUserInfo(username: string): u8 {
 	if (username.length < 3) {
@@ -45,4 +45,26 @@ export function getAccountInfo(accountId: string): Array<string> | null {
 		return userLookup.get(username);
 	}
 	return null;
+}
+
+export function setPrivateSub(username: string): u8 {
+	const sender = Context.sender;
+	if (sender != "capsule.testnet") {
+		return 0;
+	}
+	if (!userLookup.contains(username)) {
+		return 2;
+	}
+	if (privateSub.contains(username)) {
+		return 3;
+	}
+	privateSub.set(username, true);
+	return 1;
+}
+
+export function hasPrivateSub(username: string): bool {
+	if (privateSub.contains(username)) {
+		return true;
+	}
+	return false;
 }
