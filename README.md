@@ -41,3 +41,14 @@ When a user registers their account on capsule, the client calls `setUserInfo` f
 |     `3`      | Username already exists, and is owned by a different NEAR account                  |
 |     `4`      | Length of given username exceeds maximum permissible length = 18<br>               |
 |     `5`      | NEAR account associated with the transaction is already linked to another username |
+
+## Legend: return values from setPrivateSub
+
+When a user sets up a subscription on capsule, capsule-server calls `setPrivateSub` function of the contract. `setPrivateSub` returns an integer between 0 and 3, where each integer means the following:
+
+| Return value | Description                                                       |
+| :----------: | ----------------------------------------------------------------- |
+|     `0`      | Transaction sender not permitted to initiate private subscription |
+|     `1`      | Successfully initiated private subscription for a username        |
+|     `2`      | User does not exist                                               |
+|     `3`      | Private subscription for the user has already been initiated      |
