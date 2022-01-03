@@ -49,4 +49,5 @@ When a user registers their account on capsule, the client calls `setUserInfo` f
 | :----------: | --------------------------------------------------------------------------------------- |
 |     `0`      | Transaction sender not permitted to onboard account                                     |
 |     `1`      | Successfully onboarded an accountId, they can proceed with registration ie. setUserInfo |
-|     `2`      | accountId has already been onboarded                                                    |
+|     `2`      | Invalid accountId                                                                       |
+|     `3`      | accountId has already been onboarded                                                    |

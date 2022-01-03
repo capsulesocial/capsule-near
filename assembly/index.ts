@@ -55,8 +55,11 @@ export function onboardAccount(accountId: string): u8 {
 	if (sender != "capsule.testnet") {
 		return 0;
 	}
+	if (accountId.length < 2 || accountId.length > 64) {
+		return 2
+	}
 	if (onboardLookup.contains(accountId)) {
-		return 2;
+		return 3;
 	}
 	onboardLookup.set(accountId, true);
 	return 1;
