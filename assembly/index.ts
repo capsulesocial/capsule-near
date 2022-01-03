@@ -56,7 +56,7 @@ export function onboardAccount(accountId: string): u8 {
 		return 0;
 	}
 	if (accountId.length < 2 || accountId.length > 64) {
-		return 2
+		return 2;
 	}
 	if (onboardLookup.contains(accountId)) {
 		return 3;
