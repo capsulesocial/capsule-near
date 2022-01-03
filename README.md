@@ -42,3 +42,11 @@ When a user registers their account on capsule, the client calls `setUserInfo` f
 |     `4`      | Length of given username exceeds maximum permissible length = 18<br>               |
 |     `5`      | NEAR account associated with the transaction is already linked to another username |
 |     `6`      | AccountID does not have a valid invite code                                        |
+
+## Legend: return values from onboardAccount
+
+| Return value | Description                                                                             |
+| :----------: | --------------------------------------------------------------------------------------- |
+|     `0`      | Transaction sender not permitted to onboard account                                     |
+|     `1`      | Successfully onboarded an accountId, they can proceed with registration ie. setUserInfo |
+|     `2`      | accountId has already been onboarded                                                    |
