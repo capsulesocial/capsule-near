@@ -1,5 +1,5 @@
 import { Context } from "near-sdk-as";
-import { userLookup, accountLookup, privateSub } from "./model";
+import { userLookup, accountLookup, onboardLookup } from "./model";
 
 export function setUserInfo(username: string): u8 {
 	if (username.length < 3) {
@@ -13,6 +13,9 @@ export function setUserInfo(username: string): u8 {
 	const sender = Context.sender;
 	if (accountLookup.get(sender)) {
 		return 5;
+	}
+	if (!onboardLookup.contains(sender)) {
+		return 6;
 	}
 	const publicKey = Context.senderPublicKey;
 
@@ -47,24 +50,17 @@ export function getAccountInfo(accountId: string): Array<string> | null {
 	return null;
 }
 
-export function setPrivateSub(username: string): u8 {
+export function onboardAccount(accountId: string): u8 {
 	const sender = Context.sender;
 	if (sender != "capsule.testnet") {
 		return 0;
 	}
-	if (!userLookup.contains(username)) {
+	if (accountId.length < 2 || accountId.length > 64) {
 		return 2;
 	}
-	if (privateSub.contains(username)) {
+	if (onboardLookup.contains(accountId)) {
 		return 3;
 	}
-	privateSub.set(username, true);
+	onboardLookup.set(accountId, true);
 	return 1;
-}
-
-export function hasPrivateSub(username: string): bool {
-	if (privateSub.contains(username)) {
-		return true;
-	}
-	return false;
 }
