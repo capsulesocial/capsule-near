@@ -42,6 +42,7 @@ When a user registers their account on capsule, the client calls `setUserInfo` f
 |     `4`      | Length of given username exceeds maximum permissible length = 18<br>               |
 |     `5`      | NEAR account associated with the transaction is already linked to another username |
 |     `6`      | AccountID does not have a valid invite code                                        |
+|     `7`      | Invalid username; username is blocklisted                                          |
 
 ## Legend: return values from onboardAccount
 
