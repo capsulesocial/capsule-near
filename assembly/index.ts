@@ -18,7 +18,7 @@ export function setUserInfo(username: string): u8 {
 		return 6;
 	}
 
-	if (blockList.has(username)) {
+	if (blockList.has(username) || username.includes("capsule")) {
 		return 7;
 	}
 
