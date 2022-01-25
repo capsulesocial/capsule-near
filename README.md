@@ -43,6 +43,7 @@ When a user registers their account on capsule, the client calls `setUserInfo` f
 |     `5`      | NEAR account associated with the transaction is already linked to another username |
 |     `6`      | AccountID does not have a valid invite code                                        |
 |     `7`      | Invalid username; username is blocklisted                                          |
+|     `8`      | Invalid username; username contains invalid characters                             |
 
 ## Legend: return values from onboardAccount
 
