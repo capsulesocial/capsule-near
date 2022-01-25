@@ -1,4 +1,4 @@
-import { Context, logging } from "near-sdk-as";
+import { Context } from "near-sdk-as";
 import { userLookup, accountLookup, onboardLookup, blockList } from "./model";
 
 export function setUserInfo(username: string): u8 {
@@ -78,7 +78,6 @@ export function usernameInRange(username: string): bool {
 	const len = username.length;
 	for (let i = 0; i < len; i++) {
 		const charCode = username.charCodeAt(i);
-		logging.log(charCode);
 		if (
 			// Digits 0-9
 			!(charCode >= 48 && charCode <= 57) &&
