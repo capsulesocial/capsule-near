@@ -1,5 +1,5 @@
 import { Context } from "near-sdk-as";
-import { userLookup, accountLookup, onboardLookup } from "./model";
+import { userLookup, accountLookup, onboardLookup, blockList } from "./model";
 
 export function setUserInfo(username: string): u8 {
 	if (username.length < 3) {
@@ -17,6 +17,11 @@ export function setUserInfo(username: string): u8 {
 	if (!onboardLookup.contains(sender)) {
 		return 6;
 	}
+
+	if (blockList.has(username) || username.includes("capsule")) {
+		return 7;
+	}
+
 	const publicKey = Context.senderPublicKey;
 
 	const val = userLookup.get(username);
