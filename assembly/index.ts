@@ -10,6 +10,10 @@ export function setUserInfo(username: string): u8 {
 		return 4;
 	}
 
+	if (!usernameInRange(username)) {
+		return 8;
+	}
+
 	const sender = Context.sender;
 	if (accountLookup.get(sender)) {
 		return 5;
@@ -68,4 +72,22 @@ export function onboardAccount(accountId: string): u8 {
 	}
 	onboardLookup.set(accountId, true);
 	return 1;
+}
+
+export function usernameInRange(username: string): bool {
+	const len = username.length;
+	for (let i = 0; i < len; i++) {
+		const charCode = username.charCodeAt(i);
+		if (
+			// Digits 0-9
+			!(charCode >= 48 && charCode <= 57) &&
+			// Lowercase characters a-z
+			!(charCode >= 97 && charCode <= 122) &&
+			// Underscore _ character
+			charCode != 95
+		) {
+			return false;
+		}
+	}
+	return true;
 }
