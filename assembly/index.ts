@@ -1,4 +1,4 @@
-import { Context } from "near-sdk-as";
+import { Context, logging } from "near-sdk-as";
 import { userLookup, accountLookup, onboardLookup, blockList } from "./model";
 
 export function setUserInfo(username: string): u8 {
@@ -8,6 +8,10 @@ export function setUserInfo(username: string): u8 {
 
 	if (username.length > 18) {
 		return 4;
+	}
+
+	if (!usernameInRange(username)) {
+		return 8;
 	}
 
 	const sender = Context.sender;
@@ -68,4 +72,23 @@ export function onboardAccount(accountId: string): u8 {
 	}
 	onboardLookup.set(accountId, true);
 	return 1;
+}
+
+export function usernameInRange(username: string): bool {
+	const len = username.length;
+	for (let i = 0; i < len; i++) {
+		const charCode = username.charCodeAt(i);
+		logging.log(charCode);
+		if (
+			// Digits 0-9
+			!(charCode >= 48 && charCode <= 57) &&
+			// Lowercase characters a-z
+			!(charCode >= 97 && charCode <= 122) &&
+			// Underscore _ character
+			charCode != 95
+		) {
+			return false;
+		}
+	}
+	return true;
 }
