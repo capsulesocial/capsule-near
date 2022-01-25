@@ -1,4 +1,4 @@
-import { Context, logging } from "near-sdk-as";
+import { Context } from "near-sdk-as";
 import { userLookup, accountLookup, onboardLookup, blockList } from "./model";
 
 export function setUserInfo(username: string): u8 {
