@@ -26,19 +26,9 @@ export function setUserInfo(username: string): u8 {
 
 	const publicKey = Context.senderPublicKey;
 
-	const val = userLookup.get(username);
-	if (!val) {
-		userLookup.set(username, [sender, publicKey]);
-		accountLookup.set(sender, username);
-		return 1;
-	}
-
-	if (val[0] == sender) {
-		userLookup.set(username, [sender, publicKey]);
-		accountLookup.set(sender, username);
-		return 1;
-	}
-	return 3;
+	userLookup.set(username, [sender, publicKey]);
+	accountLookup.set(sender, username);
+	return 1;
 }
 
 export function getUserInfo(username: string): Array<string> | null {
