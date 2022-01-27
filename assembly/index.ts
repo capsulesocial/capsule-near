@@ -2,16 +2,18 @@ import { Context } from "near-sdk-as";
 import { userLookup, accountLookup, onboardLookup, blockList } from "./model";
 
 export function setUserInfo(username: string): u8 {
-	if (username.length < 3) {
-		return 2;
-	}
-
-	if (username.length > 18) {
-		return 4;
-	}
-
-	if (!usernameInRange(username)) {
-		return 8;
+	// Switching over strings is not yet supported
+	const uValid = validateUsername(username);
+	switch (uValid) {
+		case 2:
+		case 3:
+		case 4:
+		case 7:
+		case 8:
+			return uValid;
+		case 1:
+		default:
+			break;
 	}
 
 	const sender = Context.sender;
@@ -22,25 +24,11 @@ export function setUserInfo(username: string): u8 {
 		return 6;
 	}
 
-	if (blockList.has(username) || username.includes("capsule")) {
-		return 7;
-	}
-
 	const publicKey = Context.senderPublicKey;
 
-	const val = userLookup.get(username);
-	if (!val) {
-		userLookup.set(username, [sender, publicKey]);
-		accountLookup.set(sender, username);
-		return 1;
-	}
-
-	if (val[0] == sender) {
-		userLookup.set(username, [sender, publicKey]);
-		accountLookup.set(sender, username);
-		return 1;
-	}
-	return 3;
+	userLookup.set(username, [sender, publicKey]);
+	accountLookup.set(sender, username);
+	return 1;
 }
 
 export function getUserInfo(username: string): Array<string> | null {
@@ -90,4 +78,29 @@ export function usernameInRange(username: string): bool {
 		}
 	}
 	return true;
+}
+
+export function validateUsername(username: string): u8 {
+	if (username.length < 3) {
+		return 2;
+	}
+
+	if (username.length > 18) {
+		return 4;
+	}
+
+	if (!usernameInRange(username)) {
+		return 8;
+	}
+
+	if (blockList.has(username) || username.includes("capsule")) {
+		return 7;
+	}
+
+	const val = userLookup.get(username);
+	if (val) {
+		return 3;
+	}
+
+	return 1;
 }
