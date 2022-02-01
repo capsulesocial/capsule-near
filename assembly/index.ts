@@ -62,6 +62,10 @@ export function onboardAccount(accountId: string): u8 {
 	return 1;
 }
 
+export function isAccountOnboarded(accountId: string): bool {
+	return onboardLookup.contains(accountId);
+}
+
 export function usernameInRange(username: string): bool {
 	const len = username.length;
 	for (let i = 0; i < len; i++) {
