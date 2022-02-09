@@ -53,3 +53,26 @@ When a user registers their account on capsule, the client calls `setUserInfo` f
 |     `1`      | Successfully onboarded an accountId, they can proceed with registration ie. setUserInfo |
 |     `2`      | Invalid accountId                                                                       |
 |     `3`      | accountId has already been onboarded                                                    |
+
+## Legend: return values from requestSetUserInfo
+
+| Return value | Description                                                                        |
+| :----------: | ---------------------------------------------------------------------------------- |
+|     `1`      | Successful user-info update / registration request                                 |
+|     `2`      | Length of given username is less than the minimum permissible length = 3           |
+|     `3`      | Username already exists, and is owned by a different NEAR account                  |
+|     `4`      | Length of given username exceeds maximum permissible length = 18<br>               |
+|     `5`      | NEAR account associated with the transaction is already linked to another username |
+|     `6`      | AccountID does not have a valid invite code                                        |
+|     `7`      | Invalid username; username is **not** blocklisted                                  |
+|     `8`      | Invalid username; username contains invalid characters                             |
+
+## Legend: return values from verifySetUserInfo
+
+| Return value | Description                                                                           |
+| :----------: | ------------------------------------------------------------------------------------- |
+|     `0`      | Transaction sender not permitted to onboard account                                   |
+|     `1`      | Successful user-info update / registration                                            |
+|     `2`      | Input username doesn't exist in the list of requested usernames to register           |
+|     `3`      | Username already exists, and is owned by a different NEAR account                     |
+|     `5`      | NEAR account associated with the input username is already linked to another username |
