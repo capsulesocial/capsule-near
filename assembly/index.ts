@@ -1,5 +1,11 @@
 import { Context } from "near-sdk-as";
-import { userLookup, accountLookup, onboardLookup, blockList } from "./model";
+import {
+	userLookup,
+	accountLookup,
+	onboardLookup,
+	blockList,
+	userRequestLookup,
+} from "./model";
 
 export function setUserInfo(username: string): u8 {
 	// Switching over strings is not yet supported
@@ -84,7 +90,10 @@ export function usernameInRange(username: string): bool {
 	return true;
 }
 
-export function validateUsername(username: string): u8 {
+export function validateUsername(
+	username: string,
+	blistcheck: bool = true
+): u8 {
 	if (username.length < 3) {
 		return 2;
 	}
@@ -97,7 +106,7 @@ export function validateUsername(username: string): u8 {
 		return 8;
 	}
 
-	if (blockList.has(username) || username.includes("capsule")) {
+	if (blistcheck && (blockList.has(username) || username.includes("capsule"))) {
 		return 7;
 	}
 
@@ -107,4 +116,73 @@ export function validateUsername(username: string): u8 {
 	}
 
 	return 1;
+}
+
+export function requestSetUserInfo(username: string): u8 {
+	const uValid = validateUsername(username, false);
+	switch (uValid) {
+		case 2:
+		case 3:
+		case 4:
+		case 8:
+			return uValid;
+		case 7:
+		case 1:
+		default:
+			break;
+	}
+
+	const sender = Context.sender;
+	const publicKey = Context.senderPublicKey;
+
+	// accountId should not be associated with any existing username
+	if (accountLookup.get(sender)) {
+		return 5;
+	}
+
+	// To prevent spamming
+	if (!onboardLookup.contains(sender)) {
+		return 6;
+	}
+
+	// Reject usernames that are not in the blocklist
+	if (!blockList.has(username) && !username.includes("capsule")) {
+		return 7;
+	}
+
+	const val = userRequestLookup.get(username);
+	if (!val) {
+		userRequestLookup.set(username, [sender, publicKey]);
+		return 1;
+	}
+
+	return 3;
+}
+
+export function verifySetUserInfo(username: string): u8 {
+	const sender = Context.sender;
+	if (sender != "capsule.testnet") {
+		return 0;
+	}
+
+	const val = userRequestLookup.get(username);
+	if (!val) {
+		return 2;
+	}
+	userRequestLookup.delete(username);
+
+	const accountId = val[0];
+
+	if (accountLookup.get(accountId)) {
+		return 5;
+	}
+
+	const val2 = userLookup.get(username);
+	if (!val2) {
+		userLookup.set(username, val);
+		accountLookup.set(accountId, username);
+		return 1;
+	}
+
+	return 3;
 }
