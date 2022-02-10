@@ -8,5 +8,8 @@
 	"private": true,
 	"dependencies": {
 		"near-sdk-as": "^3.2.3"
+	},
+	"scripts": {
+		"test": "asp --verbose"
 	}
 }
