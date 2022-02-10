@@ -133,6 +133,11 @@ describe("registration test", () => {
 
 		expect(setUserInfo(inputUsername)).toBe(1);
 		expect(userLookup.contains(inputUsername)).toBe(true);
+		const result = userLookup.get(inputUsername);
+		expect(result).not.toBeNull();
+		if (result) {
+			expect(result[0]).toBe(inputAccountId);
+		}
 		expect(accountLookup.contains(inputAccountId)).toBe(true);
 	});
 
@@ -167,6 +172,11 @@ describe("registration test", () => {
 
 		VMContext.setSigner_account_id("onboard2.testnet");
 		expect(setUserInfo(inputUsername)).toBe(3);
-		// TODO: call getUserInfo and ensure [accountId, publicKey] are not overwritten
+
+		expect(userLookup.contains(inputUsername)).toBe(true);
+		const result = userLookup.get(inputUsername);
+		if (result) {
+			expect(result[0]).toBe(inputAccountId);
+		}
 	});
 });
