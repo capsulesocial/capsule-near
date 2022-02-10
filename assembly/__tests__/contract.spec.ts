@@ -10,28 +10,25 @@ describe("onboard test", () => {
 		onboardLookup.delete(inputAccountId);
 	});
 
-	it("should not onboard a user", () => {
+	it("should return an error: only admin accounts allowed to onboard", () => {
 		VMContext.setSigner_account_id("test.testnet");
-		expect(onboardAccount(inputAccountId)).toBe(0, "should not be onboarded");
+		expect(onboardAccount(inputAccountId)).toBe(0);
 		expect(onboardLookup.contains(inputAccountId)).toBe(false);
 	});
 
 	it("should onboard a user succesfully", () => {
 		VMContext.setSigner_account_id("capsule.testnet");
 		expect(onboardAccount(inputAccountId)).toBe(1);
-		expect(onboardLookup.contains(inputAccountId)).toBe(
-			true,
-			"should be onboarded"
-		);
+		expect(onboardLookup.contains(inputAccountId)).toBe(true);
 	});
 
-	it("should not onboard a user: invalid accountId length", () => {
+	it("should return an error: accountId too small", () => {
 		VMContext.setSigner_account_id("capsule.testnet");
 		expect(onboardAccount("a")).toBe(2);
 		expect(onboardLookup.contains("a")).toBe(false);
 	});
 
-	it("should not onboard a user: invalid accountId length", () => {
+	it("should return an error: accountId too long", () => {
 		VMContext.setSigner_account_id("capsule.testnet");
 		const longAccId =
 			"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklm";
@@ -39,7 +36,7 @@ describe("onboard test", () => {
 		expect(onboardLookup.contains(longAccId)).toBe(false);
 	});
 
-	it("should not onboarded an already onboarded user", () => {
+	it("should return an error: accountId already onboarded", () => {
 		VMContext.setSigner_account_id("capsule.testnet");
 		onboardAccount(inputAccountId);
 		expect(onboardAccount(inputAccountId)).toBe(3, "cannot onboard twice");
@@ -61,7 +58,7 @@ describe("registration test", () => {
 		expect(accountLookup.contains(inputAccountId)).toBe(false);
 	});
 
-	it("should return an error: username length less than mininum required", () => {
+	it("should return an error: username is too small", () => {
 		VMContext.setSigner_account_id("capsule.testnet");
 		onboardAccount(inputAccountId);
 
@@ -71,7 +68,7 @@ describe("registration test", () => {
 		expect(userLookup.contains("ab")).toBe(false);
 	});
 
-	it("should return an error: username is longer than maximum permissible length", () => {
+	it("should return an error: username is too long", () => {
 		VMContext.setSigner_account_id("capsule.testnet");
 		onboardAccount(inputAccountId);
 
@@ -81,7 +78,7 @@ describe("registration test", () => {
 		expect(userLookup.contains("abcdefghijklmnopqrs")).toBe(false);
 	});
 
-	it("should return an error: username is blocklisted", () => {
+	it("should return an error: cannot register with 'root' as username", () => {
 		VMContext.setSigner_account_id("capsule.testnet");
 		onboardAccount(inputAccountId);
 
@@ -91,38 +88,51 @@ describe("registration test", () => {
 		expect(accountLookup.contains(inputAccountId)).toBe(false);
 		expect(userLookup.contains("root")).toBe(false);
 
-		// Should this be inside a separate it() ?
-		expect(setUserInfo("support")).toBe(7);
-		expect(accountLookup.contains(inputAccountId)).toBe(false);
-		expect(userLookup.contains("support")).toBe(false);
-
-		// Should this be inside a separate it() ?
-		expect(setUserInfo("admin")).toBe(7);
-		expect(accountLookup.contains(inputAccountId)).toBe(false);
-		expect(userLookup.contains("admin")).toBe(false);
-
 		// TODO: check "capsule" and any username that contains "capsule"
 	});
 
-	it("should return an error: username contains invalid characters", () => {
+	it("should return an error: cannot register with 'support' as username", () => {
+		VMContext.setSigner_account_id("capsule.testnet");
+		onboardAccount(inputAccountId);
+
+		VMContext.setSigner_account_id(inputAccountId);
+		expect(setUserInfo("support")).toBe(7);
+		expect(accountLookup.contains(inputAccountId)).toBe(false);
+		expect(userLookup.contains("support")).toBe(false);
+	});
+
+	it("should return an error: cannot register with 'admin' as username", () => {
+		VMContext.setSigner_account_id("capsule.testnet");
+		onboardAccount(inputAccountId);
+
+		VMContext.setSigner_account_id(inputAccountId);
+		expect(setUserInfo("admin")).toBe(7);
+		expect(accountLookup.contains(inputAccountId)).toBe(false);
+		expect(userLookup.contains("admin")).toBe(false);
+	});
+
+	it("should return an error: username cannot contain uppercase characters", () => {
 		VMContext.setSigner_account_id("capsule.testnet");
 		onboardAccount(inputAccountId);
 
 		VMContext.setSigner_account_id(inputAccountId);
 
-		// Uppercase character not allowed
 		expect(setUserInfo("rooT")).toBe(8);
 		expect(accountLookup.contains(inputAccountId)).toBe(false);
 		expect(userLookup.contains("rooT")).toBe(false);
 
-		// Should this be inside a separate it() ?
-		// Dots not allowed
+		// TODO: more comprehensive tests for identifying invalid chars in usernames
+		// TODO: Separate tests for usernameInRange
+	});
+
+	it("should return an error: username cannot contain dots", () => {
+		VMContext.setSigner_account_id("capsule.testnet");
+		onboardAccount(inputAccountId);
+
+		VMContext.setSigner_account_id(inputAccountId);
 		expect(setUserInfo("suppor.")).toBe(8);
 		expect(accountLookup.contains(inputAccountId)).toBe(false);
 		expect(userLookup.contains("suppor.")).toBe(false);
-
-		// TODO: more comprehensive tests for identifying invalid chars in usernames
-		// TODO: Separate tests for usernameInRange
 	});
 
 	it("should register a username succesfully", () => {
@@ -141,7 +151,7 @@ describe("registration test", () => {
 		expect(accountLookup.contains(inputAccountId)).toBe(true);
 	});
 
-	it("should return an error: accountId linked another user", () => {
+	it("should return an error: accountId linked to another username", () => {
 		VMContext.setSigner_account_id("capsule.testnet");
 		onboardAccount(inputAccountId);
 
