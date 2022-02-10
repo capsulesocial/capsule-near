@@ -1,13 +1,15 @@
 {
-  "name": "capsule-near",
-  "version": "0.0.1",
-  "description": "Repository containing smart contract for storing/retrieving user profiles",
-  "repository": "https://github.com/capsulesocial/capsule-near",
-  "author": "capsule-social",
-  "license": "MIT",
-  "private": true,
-  "dependencies": {
-    "asbuild": "^0.2.0",
-    "near-sdk-as": "^3.2.3"
-  }
+	"name": "capsule-near",
+	"version": "0.0.1",
+	"description": "Repository containing smart contract for storing/retrieving user profiles",
+	"repository": "https://github.com/capsulesocial/capsule-near",
+	"author": "capsule-social",
+	"license": "MIT",
+	"private": true,
+	"dependencies": {
+		"near-sdk-as": "^3.2.3"
+	},
+	"scripts": {
+		"test": "asp --verbose"
+	}
 }
