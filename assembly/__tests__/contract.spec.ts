@@ -370,6 +370,21 @@ describe("testing registration of blocklisted usernames", () => {
 		expect(accountLookup.contains(blistedAccountId)).toBe(false);
 	});
 
+	it("should add two usernames to waiting list with same accountId", () => {
+		VMContext.setSigner_account_id("capsule.testnet");
+		onboardAccount(blistedAccountId);
+
+		VMContext.setSigner_account_id(blistedAccountId);
+		requestSetUserInfo(blistedUserOne);
+
+		expect(requestSetUserInfo(blistedUserTwo)).toBe(1);
+		expect(userRequestLookup.contains(blistedUserTwo)).toBe(true);
+		const result = userRequestLookup.get(blistedUserTwo);
+		if (result) {
+			expect(result[0]).toBe(blistedAccountId);
+		}
+	});
+
 	it("should return an error: username is already in waiting list", () => {
 		VMContext.setSigner_account_id("capsule.testnet");
 		onboardAccount(blistedAccountId);
@@ -436,5 +451,37 @@ describe("testing registration of blocklisted usernames", () => {
 			expect(userInfo[0]).toBe(userRequestInfo[0]);
 			expect(userInfo[1]).toBe(userRequestInfo[1]);
 		}
+	});
+
+	it("[verify] should return an error: accountId already linked to another username", () => {
+		VMContext.setSigner_account_id("capsule.testnet");
+		onboardAccount(blistedAccountId);
+
+		VMContext.setSigner_account_id(blistedAccountId);
+		requestSetUserInfo(blistedUserOne);
+		requestSetUserInfo(blistedUserTwo);
+
+		VMContext.setSigner_account_id("capsule.testnet");
+		verifySetUserInfo(blistedUserOne);
+		expect(verifySetUserInfo(blistedUserTwo)).toBe(5);
+
+		expect(userLookup.contains(blistedUserTwo)).toBe(false);
+		expect(userRequestLookup.contains(blistedUserTwo)).toBe(false);
+		expect(userLookup.contains(blistedUserOne)).toBe(true);
+	});
+
+	it("should return an error: username is already a registered user", () => {
+		VMContext.setSigner_account_id("capsule.testnet");
+		onboardAccount(blistedAccountId);
+		onboardAccount("onboard2.testnet");
+
+		VMContext.setSigner_account_id(blistedAccountId);
+		requestSetUserInfo(blistedUserOne);
+		VMContext.setSigner_account_id("capsule.testnet");
+		verifySetUserInfo(blistedUserOne);
+
+		VMContext.setSigner_account_id("onboard2.testnet");
+		expect(requestSetUserInfo(blistedUserOne)).toBe(3);
+		expect(userRequestLookup.contains(blistedUserOne)).toBe(false);
 	});
 });
