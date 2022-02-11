@@ -11,12 +11,18 @@ export function setUserInfo(username: string): u8 {
 	// Switching over strings is not yet supported
 	const uValid = validateUsername(username);
 	switch (uValid) {
+		// Username too short
 		case 2:
+		// Username already exists
 		case 3:
+		// Username too long
 		case 4:
+		// Username is blocklisted
 		case 7:
+		// Username contains invalid characters
 		case 8:
 			return uValid;
+		// Valid username
 		case 1:
 		default:
 			break;
@@ -24,9 +30,11 @@ export function setUserInfo(username: string): u8 {
 
 	const sender = Context.sender;
 	if (accountLookup.get(sender)) {
+		// accountId is already linked to a username
 		return 5;
 	}
 	if (!onboardLookup.contains(sender)) {
+		// accountId is not onboarded
 		return 6;
 	}
 
@@ -56,12 +64,15 @@ export function getAccountInfo(accountId: string): Array<string> | null {
 export function onboardAccount(accountId: string): u8 {
 	const sender = Context.sender;
 	if (sender != "capsule.testnet") {
+		// non-admin accounts are not allowed to onboard
 		return 0;
 	}
 	if (accountId.length < 2 || accountId.length > 64) {
+		// accountId length outside the permissible range
 		return 2;
 	}
 	if (onboardLookup.contains(accountId)) {
+		// accountId is already onboarded
 		return 3;
 	}
 	onboardLookup.set(accountId, true);
@@ -95,23 +106,28 @@ export function validateUsername(
 	blistcheck: bool = true
 ): u8 {
 	if (username.length < 3) {
+		// Username too short
 		return 2;
 	}
 
 	if (username.length > 18) {
+		// Username too long
 		return 4;
 	}
 
 	if (!usernameInRange(username)) {
+		// Username contains invalid characters
 		return 8;
 	}
 
 	if (blistcheck && (blockList.has(username) || username.includes("capsule"))) {
+		// Username is blocklisted
 		return 7;
 	}
 
 	const val = userLookup.get(username);
 	if (val) {
+		// Username already exists
 		return 3;
 	}
 
@@ -121,12 +137,18 @@ export function validateUsername(
 export function requestSetUserInfo(username: string): u8 {
 	const uValid = validateUsername(username, false);
 	switch (uValid) {
+		// Username too short
 		case 2:
+		// Username already exists
 		case 3:
+		// Username too long
 		case 4:
+		// Username contains invalid characters
 		case 8:
 			return uValid;
+		// Username is blocklisted
 		case 7:
+		// Valid username
 		case 1:
 		default:
 			break;
@@ -142,31 +164,37 @@ export function requestSetUserInfo(username: string): u8 {
 
 	// To prevent spamming
 	if (!onboardLookup.contains(sender)) {
+		// accountId not onboarded
 		return 6;
 	}
 
 	// Reject usernames that are not in the blocklist
 	if (!blockList.has(username) && !username.includes("capsule")) {
+		// Username is not blocklisted
 		return 7;
 	}
 
 	const val = userRequestLookup.get(username);
 	if (!val) {
 		userRequestLookup.set(username, [sender, publicKey]);
+		// Successful userInfo update
 		return 1;
 	}
 
+	// Username already exists
 	return 3;
 }
 
 export function verifySetUserInfo(username: string): u8 {
 	const sender = Context.sender;
 	if (sender != "capsule.testnet") {
+		// Non-admin accounts are not allowed to verify
 		return 0;
 	}
 
 	const val = userRequestLookup.get(username);
 	if (!val) {
+		// Username doesn't exist in the waiting list
 		return 2;
 	}
 	userRequestLookup.delete(username);
@@ -174,6 +202,7 @@ export function verifySetUserInfo(username: string): u8 {
 	const accountId = val[0];
 
 	if (accountLookup.get(accountId)) {
+		// NEAR account already linked to another username
 		return 5;
 	}
 
@@ -181,8 +210,10 @@ export function verifySetUserInfo(username: string): u8 {
 	if (!val2) {
 		userLookup.set(username, val);
 		accountLookup.set(accountId, username);
+		// Successful registration
 		return 1;
 	}
 
+	// Username already exists
 	return 3;
 }
