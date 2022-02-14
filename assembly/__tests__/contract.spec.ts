@@ -1,5 +1,6 @@
 import { VMContext } from "near-sdk-as";
 import {
+	deactivateAccount,
 	onboardAccount,
 	requestSetUserInfo,
 	setUserInfo,
@@ -483,5 +484,65 @@ describe("testing registration of blocklisted usernames", () => {
 		VMContext.setSigner_account_id("onboard2.testnet");
 		expect(requestSetUserInfo(blistedUserOne)).toBe(3);
 		expect(userRequestLookup.contains(blistedUserOne)).toBe(false);
+	});
+});
+
+describe("deactivate account", () => {
+	afterEach(() => {
+		onboardLookup.delete(inputAccountId);
+		accountLookup.delete(inputAccountId);
+		userLookup.delete(inputUsername);
+	});
+
+	it("should return an error: accountId not linked to any username", () => {
+		VMContext.setSigner_account_id(inputAccountId);
+		expect(deactivateAccount()).toBe(false);
+	});
+
+	it("should successfully deactivate an account", () => {
+		VMContext.setSigner_account_id("capsule.testnet");
+		onboardAccount(inputAccountId);
+
+		VMContext.setSigner_account_id(inputAccountId);
+		setUserInfo(inputUsername);
+
+		expect(userLookup.contains(inputUsername)).toBe(true);
+		const userInfo = userLookup.get(inputUsername);
+		// Always true
+		if (userInfo) {
+			expect(userInfo.length).toBe(2);
+		}
+
+		expect(deactivateAccount()).toBe(true);
+		const userInfoUpdated = userLookup.get(inputUsername);
+		expect(userInfoUpdated).not.toBeNull();
+		// Always true
+		if (userInfoUpdated) {
+			expect(userInfoUpdated.length).toBe(3);
+		}
+
+		// Always true
+		if (userInfo && userInfoUpdated) {
+			expect(userInfo[0]).toBe(userInfoUpdated[0]);
+			expect(userInfo[1]).toBe(userInfoUpdated[1]);
+		}
+	});
+
+	it("should update timestamp correctly if updated more than once", () => {
+		VMContext.setSigner_account_id("capsule.testnet");
+		onboardAccount(inputAccountId);
+
+		VMContext.setSigner_account_id(inputAccountId);
+		setUserInfo(inputUsername);
+
+		deactivateAccount();
+
+		expect(deactivateAccount()).toBe(true);
+		const userInfoUpdated = userLookup.get(inputUsername);
+		expect(userInfoUpdated).not.toBeNull();
+		// Always true
+		if (userInfoUpdated) {
+			expect(userInfoUpdated.length).toBe(3);
+		}
 	});
 });
