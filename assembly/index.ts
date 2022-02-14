@@ -217,3 +217,23 @@ export function verifySetUserInfo(username: string): u8 {
 	// Username already exists
 	return 3;
 }
+
+export function deactiveAccount(): u8 {
+	const sender = Context.sender;
+	const blockOn = Context.blockTimestamp;
+
+	const username = accountLookup.get(sender);
+	// if (!username) {return;} doesn't work!
+
+	if (username) {
+		const userInfo = userLookup.get(username);
+		if (userInfo) {
+			// Compare storage / compute costs if radix is changed to 10
+			const newList = userInfo.slice(0, 2).concat([blockOn.toString(16)]);
+			userLookup.set(username, newList);
+			return 1;
+		}
+	}
+
+	return 0;
+}
