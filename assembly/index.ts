@@ -218,7 +218,7 @@ export function verifySetUserInfo(username: string): u8 {
 	return 3;
 }
 
-export function deactiveAccount(): u8 {
+export function deactivateAccount(): u8 {
 	const sender = Context.sender;
 	const blockOn = Context.blockTimestamp;
 
