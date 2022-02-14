@@ -218,7 +218,7 @@ export function verifySetUserInfo(username: string): u8 {
 	return 3;
 }
 
-export function deactivateAccount(): u8 {
+export function deactivateAccount(): bool {
 	const sender = Context.sender;
 	const blockOn = Context.blockTimestamp;
 
@@ -231,9 +231,9 @@ export function deactivateAccount(): u8 {
 			// Compare storage / compute costs if radix is changed to 10
 			const newList = userInfo.slice(0, 2).concat([blockOn.toString(16)]);
 			userLookup.set(username, newList);
-			return 1;
+			return true;
 		}
 	}
 
-	return 0;
+	return false;
 }
