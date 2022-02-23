@@ -8,3 +8,5 @@ export const blockList = new Set<string>();
 blockList.add("root");
 blockList.add("admin");
 blockList.add("support");
+
+export const bannedUsers = new PersistentMap<string, bool>("b");
