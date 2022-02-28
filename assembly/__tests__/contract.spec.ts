@@ -27,7 +27,7 @@ const blistedUserThree: string = "support";
 const blistedUserCapsule: string = "capsuleoff";
 
 function getAdminAccount(): string {
-	return "capsule.testnet";
+	return "capsule-alpha.testnet";
 }
 
 function getBanAdminAccount(): string {

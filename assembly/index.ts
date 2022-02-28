@@ -65,7 +65,7 @@ export function getAccountInfo(accountId: string): Array<string> | null {
 
 export function onboardAccount(accountId: string): u8 {
 	const sender = Context.sender;
-	if (sender != "capsule.testnet") {
+	if (sender != "capsule-alpha.testnet") {
 		// non-admin accounts are not allowed to onboard
 		return 0;
 	}
@@ -189,7 +189,7 @@ export function requestSetUserInfo(username: string): u8 {
 
 export function verifySetUserInfo(username: string): u8 {
 	const sender = Context.sender;
-	if (sender != "capsule.testnet") {
+	if (sender != "capsule-alpha.testnet") {
 		// Non-admin accounts are not allowed to verify
 		return 0;
 	}
