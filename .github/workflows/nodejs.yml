@@ -2,7 +2,7 @@ name: NEAR CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, alpha]
   pull_request:
     branches: [main]
 
