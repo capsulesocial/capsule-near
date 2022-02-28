@@ -1,5 +1,6 @@
 import { VMContext } from "near-sdk-as";
 import {
+	banAccount,
 	deactivateAccount,
 	onboardAccount,
 	requestSetUserInfo,
@@ -8,6 +9,7 @@ import {
 } from "..";
 import {
 	accountLookup,
+	bannedUsers,
 	onboardLookup,
 	userLookup,
 	userRequestLookup,
@@ -544,5 +546,76 @@ describe("deactivate account", () => {
 		if (userInfoUpdated) {
 			expect(userInfoUpdated.length).toBe(3);
 		}
+	});
+});
+
+describe("ban accounts", () => {
+	afterEach(() => {
+		onboardLookup.delete(inputAccountId);
+		accountLookup.delete(inputAccountId);
+		userLookup.delete(inputUsername);
+		bannedUsers.delete(inputUsername);
+	});
+
+	it("should return an error: insufficient permissions", () => {
+		VMContext.setSigner_account_id("capsule.testnet");
+		onboardAccount(inputAccountId);
+
+		VMContext.setSigner_account_id(inputAccountId);
+		setUserInfo(inputUsername);
+
+		expect(userLookup.contains(inputUsername)).toBe(true);
+		const userInfo = userLookup.get(inputUsername);
+		// Always true
+		if (userInfo) {
+			expect(userInfo.length).toBe(2);
+		}
+
+		VMContext.setSigner_account_id("capsule.testnet");
+		expect(banAccount(inputUsername)).toBe(false);
+		const userInfoUpdated = userLookup.get(inputUsername);
+		expect(userInfoUpdated).not.toBeNull();
+		// Always true
+		if (userInfoUpdated) {
+			expect(userInfoUpdated.length).toBe(2);
+		}
+
+		// Always true
+		if (userInfo && userInfoUpdated) {
+			expect(userInfo[0]).toBe(userInfoUpdated[0]);
+			expect(userInfo[1]).toBe(userInfoUpdated[1]);
+		}
+		expect(bannedUsers.contains(inputUsername)).toBe(false);
+	});
+
+	it("should successfully ban an account", () => {
+		VMContext.setSigner_account_id("capsule.testnet");
+		onboardAccount(inputAccountId);
+
+		VMContext.setSigner_account_id(inputAccountId);
+		setUserInfo(inputUsername);
+
+		expect(userLookup.contains(inputUsername)).toBe(true);
+		const userInfo = userLookup.get(inputUsername);
+		// Always true
+		if (userInfo) {
+			expect(userInfo.length).toBe(2);
+		}
+
+		VMContext.setSigner_account_id("capsuleblock.testnet");
+		expect(banAccount(inputUsername)).toBe(true);
+		const userInfoUpdated = userLookup.get(inputUsername);
+		expect(userInfoUpdated).not.toBeNull();
+		// Always true
+		if (userInfoUpdated) {
+			expect(userInfoUpdated.length).toBe(3);
+		}
+
+		// Always true
+		if (userInfo && userInfoUpdated) {
+			expect(userInfo[0]).toBe(userInfoUpdated[0]);
+			expect(userInfo[1]).toBe(userInfoUpdated[1]);
+		}
+		expect(bannedUsers.contains(inputUsername)).toBe(true);
 	});
 });

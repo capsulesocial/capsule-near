@@ -5,6 +5,7 @@ import {
 	onboardLookup,
 	blockList,
 	userRequestLookup,
+	bannedUsers,
 } from "./model";
 
 export function setUserInfo(username: string): u8 {
@@ -233,6 +234,26 @@ export function deactivateAccount(): bool {
 			userLookup.set(username, newList);
 			return true;
 		}
+	}
+
+	return false;
+}
+
+export function banAccount(username: string): bool {
+	const sender = Context.sender;
+	const blockOn = Context.blockTimestamp;
+
+	if (sender != "capsuleblock.testnet") {
+		return false;
+	}
+
+	const userInfo = userLookup.get(username);
+	if (userInfo) {
+		// Compare storage / compute costs if radix is changed to 10
+		const newList = userInfo.slice(0, 2).concat([blockOn.toString(16)]);
+		userLookup.set(username, newList);
+		bannedUsers.set(username, true);
+		return true;
 	}
 
 	return false;
