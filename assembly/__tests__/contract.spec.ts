@@ -24,6 +24,10 @@ const blistedUserTwo: string = "admin";
 const blistedUserThree: string = "support";
 const blistedUserCapsule: string = "capsuleoff";
 
+function getAdminAccount(): string {
+	return "capsule.testnet";
+}
+
 describe("onboard test", () => {
 	afterEach(() => {
 		onboardLookup.delete(inputAccountId);
@@ -36,19 +40,19 @@ describe("onboard test", () => {
 	});
 
 	it("should onboard a user succesfully", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		expect(onboardAccount(inputAccountId)).toBe(1);
 		expect(onboardLookup.contains(inputAccountId)).toBe(true);
 	});
 
 	it("should return an error: accountId too small", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		expect(onboardAccount("a")).toBe(2);
 		expect(onboardLookup.contains("a")).toBe(false);
 	});
 
 	it("should return an error: accountId too long", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		const longAccId =
 			"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklm";
 		expect(onboardAccount(longAccId)).toBe(2);
@@ -56,7 +60,7 @@ describe("onboard test", () => {
 	});
 
 	it("should return an error: accountId already onboarded", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
 		expect(onboardAccount(inputAccountId)).toBe(3, "cannot onboard twice");
 	});
@@ -78,7 +82,7 @@ describe("registration test", () => {
 	});
 
 	it("should return an error: username is too small", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
 
 		VMContext.setSigner_account_id(inputAccountId);
@@ -88,7 +92,7 @@ describe("registration test", () => {
 	});
 
 	it("should return an error: username is too long", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
 
 		VMContext.setSigner_account_id(inputAccountId);
@@ -98,7 +102,7 @@ describe("registration test", () => {
 	});
 
 	it("should return an error: cannot register with 'root' as username", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
 
 		VMContext.setSigner_account_id(inputAccountId);
@@ -111,7 +115,7 @@ describe("registration test", () => {
 	});
 
 	it("should return an error: cannot register with 'support' as username", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
 
 		VMContext.setSigner_account_id(inputAccountId);
@@ -121,7 +125,7 @@ describe("registration test", () => {
 	});
 
 	it("should return an error: cannot register with 'admin' as username", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
 
 		VMContext.setSigner_account_id(inputAccountId);
@@ -131,7 +135,7 @@ describe("registration test", () => {
 	});
 
 	it("should return an error: username cannot contain uppercase characters", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
 
 		VMContext.setSigner_account_id(inputAccountId);
@@ -145,7 +149,7 @@ describe("registration test", () => {
 	});
 
 	it("should return an error: username cannot contain dots", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
 
 		VMContext.setSigner_account_id(inputAccountId);
@@ -155,7 +159,7 @@ describe("registration test", () => {
 	});
 
 	it("should register a username succesfully", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
 
 		VMContext.setSigner_account_id(inputAccountId);
@@ -171,7 +175,7 @@ describe("registration test", () => {
 	});
 
 	it("should return an error: accountId linked to another username", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
 
 		VMContext.setSigner_account_id(inputAccountId);
@@ -182,7 +186,7 @@ describe("registration test", () => {
 	});
 
 	it("should return an error: cannot update userInfo once registered", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
 
 		VMContext.setSigner_account_id(inputAccountId);
@@ -192,7 +196,7 @@ describe("registration test", () => {
 	});
 
 	it("should return an error: username taken by another accountId", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
 		onboardAccount("onboard2.testnet");
 
@@ -240,7 +244,7 @@ describe("testing registration of blocklisted usernames", () => {
 	});
 
 	it("should return an error: username is too small", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(blistedAccountId);
 
 		VMContext.setSigner_account_id(blistedAccountId);
@@ -252,7 +256,7 @@ describe("testing registration of blocklisted usernames", () => {
 	});
 
 	it("should return an error: username is too long", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(blistedAccountId);
 
 		VMContext.setSigner_account_id(blistedAccountId);
@@ -264,7 +268,7 @@ describe("testing registration of blocklisted usernames", () => {
 	});
 
 	it("should return an error: username cannot contain uppercase characters", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(blistedAccountId);
 
 		VMContext.setSigner_account_id(blistedAccountId);
@@ -276,7 +280,7 @@ describe("testing registration of blocklisted usernames", () => {
 	});
 
 	it("should return an error: username cannot contain dots", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(blistedAccountId);
 
 		VMContext.setSigner_account_id(blistedAccountId);
@@ -288,7 +292,7 @@ describe("testing registration of blocklisted usernames", () => {
 	});
 
 	it("should return an error: username is not blocklisted", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(blistedAccountId);
 
 		VMContext.setSigner_account_id(blistedAccountId);
@@ -300,7 +304,7 @@ describe("testing registration of blocklisted usernames", () => {
 	});
 
 	it("should return an error: accountId linked to another registered username", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(blistedAccountId);
 
 		VMContext.setSigner_account_id(blistedAccountId);
@@ -310,7 +314,7 @@ describe("testing registration of blocklisted usernames", () => {
 	});
 
 	it("should successfully add 'root' to waiting list", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(blistedAccountId);
 
 		VMContext.setSigner_account_id(blistedAccountId);
@@ -326,7 +330,7 @@ describe("testing registration of blocklisted usernames", () => {
 	});
 
 	it("should successfully add 'admin' to waiting list", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(blistedAccountId);
 
 		VMContext.setSigner_account_id(blistedAccountId);
@@ -342,7 +346,7 @@ describe("testing registration of blocklisted usernames", () => {
 	});
 
 	it("should successfully add 'support' to waiting list", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(blistedAccountId);
 
 		VMContext.setSigner_account_id(blistedAccountId);
@@ -358,7 +362,7 @@ describe("testing registration of blocklisted usernames", () => {
 	});
 
 	it("should successfully add 'capsuleoff' to waiting list", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(blistedAccountId);
 
 		VMContext.setSigner_account_id(blistedAccountId);
@@ -374,7 +378,7 @@ describe("testing registration of blocklisted usernames", () => {
 	});
 
 	it("should add two usernames to waiting list with same accountId", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(blistedAccountId);
 
 		VMContext.setSigner_account_id(blistedAccountId);
@@ -389,7 +393,7 @@ describe("testing registration of blocklisted usernames", () => {
 	});
 
 	it("should return an error: username is already in waiting list", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(blistedAccountId);
 		onboardAccount("onboard2.testnet");
 
@@ -406,7 +410,7 @@ describe("testing registration of blocklisted usernames", () => {
 	});
 
 	it("[verify] should return an error: only admin accounts allowed to verify", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(blistedAccountId);
 
 		VMContext.setSigner_account_id(blistedAccountId);
@@ -420,7 +424,7 @@ describe("testing registration of blocklisted usernames", () => {
 	});
 
 	it("[verify] should return an error: username not in waiting list", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		expect(verifySetUserInfo(blistedUserOne)).toBe(2);
 
 		expect(userRequestLookup.contains(blistedUserOne)).toBe(false);
@@ -429,7 +433,7 @@ describe("testing registration of blocklisted usernames", () => {
 	});
 
 	it("[verify] should register a blocklisted username", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(blistedAccountId);
 
 		VMContext.setSigner_account_id(blistedAccountId);
@@ -438,7 +442,7 @@ describe("testing registration of blocklisted usernames", () => {
 		expect(userRequestLookup.contains(blistedUserOne)).toBe(true);
 		const userRequestInfo = userRequestLookup.get(blistedUserOne);
 
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		expect(verifySetUserInfo(blistedUserOne)).toBe(1);
 
 		expect(userRequestLookup.contains(blistedUserOne)).toBe(false);
@@ -457,14 +461,14 @@ describe("testing registration of blocklisted usernames", () => {
 	});
 
 	it("[verify] should return an error: accountId already linked to another username", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(blistedAccountId);
 
 		VMContext.setSigner_account_id(blistedAccountId);
 		requestSetUserInfo(blistedUserOne);
 		requestSetUserInfo(blistedUserTwo);
 
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		verifySetUserInfo(blistedUserOne);
 		expect(verifySetUserInfo(blistedUserTwo)).toBe(5);
 
@@ -474,13 +478,13 @@ describe("testing registration of blocklisted usernames", () => {
 	});
 
 	it("should return an error: username is already a registered user", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(blistedAccountId);
 		onboardAccount("onboard2.testnet");
 
 		VMContext.setSigner_account_id(blistedAccountId);
 		requestSetUserInfo(blistedUserOne);
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		verifySetUserInfo(blistedUserOne);
 
 		VMContext.setSigner_account_id("onboard2.testnet");
@@ -502,7 +506,7 @@ describe("deactivate account", () => {
 	});
 
 	it("should successfully deactivate an account", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
 
 		VMContext.setSigner_account_id(inputAccountId);
@@ -531,7 +535,7 @@ describe("deactivate account", () => {
 	});
 
 	it("should update timestamp correctly if updated more than once", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
 
 		VMContext.setSigner_account_id(inputAccountId);
@@ -558,7 +562,7 @@ describe("ban accounts", () => {
 	});
 
 	it("should return an error: insufficient permissions", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
 
 		VMContext.setSigner_account_id(inputAccountId);
@@ -571,7 +575,7 @@ describe("ban accounts", () => {
 			expect(userInfo.length).toBe(2);
 		}
 
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		expect(banAccount(inputUsername)).toBe(false);
 		const userInfoUpdated = userLookup.get(inputUsername);
 		expect(userInfoUpdated).not.toBeNull();
@@ -589,7 +593,7 @@ describe("ban accounts", () => {
 	});
 
 	it("should successfully ban an account", () => {
-		VMContext.setSigner_account_id("capsule.testnet");
+		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
 
 		VMContext.setSigner_account_id(inputAccountId);
