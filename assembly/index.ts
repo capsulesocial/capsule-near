@@ -239,20 +239,45 @@ export function deactivateAccount(): bool {
 	return false;
 }
 
-export function banAccount(username: string): bool {
+export function banAccount(
+	username: string,
+	classCode: u8,
+	cid: string | null = null
+): bool {
+	// TODO: validate cid length
 	const sender = Context.sender;
-	const blockOn = Context.blockTimestamp;
+	const blockOn = Context.blockTimestamp.toString(16);
+	const classStr = classCode.toString(10);
 
 	if (sender != "capsuleblock.testnet") {
 		return false;
 	}
 
+	switch (classCode) {
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+			break;
+		default:
+			return false;
+	}
+
+	const banInfo = [blockOn, classStr];
+	if (cid) {
+		banInfo.push(cid);
+	}
+
 	const userInfo = userLookup.get(username);
 	if (userInfo) {
 		// Compare storage / compute costs if radix is changed to 10
-		const newList = userInfo.slice(0, 2).concat([blockOn.toString(16)]);
+		const newList = userInfo.slice(0, 2).concat([blockOn]);
 		userLookup.set(username, newList);
-		bannedUsers.set(username, true);
+		bannedUsers.set(username, banInfo);
 		return true;
 	}
 
