@@ -254,13 +254,21 @@ export function banAccount(
 	}
 
 	switch (classCode) {
+		// Content deemed illegal
 		case 1:
+		// Threats of violence
 		case 2:
+		// Pornography / sexually exploitative
 		case 3:
+		// Extremely gruesome / violent content
 		case 4:
+		// Non-consensually posting confidential personal info
 		case 5:
+		// Content that is a result of software error
 		case 6:
+		// Plagiarism / impersonation
 		case 7:
+		// Spam
 		case 8:
 			break;
 		default:

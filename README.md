@@ -76,3 +76,9 @@ When a user registers their account on capsule, the client calls `setUserInfo` f
 |     `2`      | Input username doesn't exist in the list of requested usernames to register           |
 |     `3`      | Username already exists, and is owned by a different NEAR account                     |
 |     `5`      | NEAR account associated with the input username is already linked to another username |
+
+## Legend: classification code for banning
+
+| Code | Description                                                                                                                                                                                                                           |
+| :--: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `1`  | Content that is deemed illegal under United States law or Delaware state law, where Capsule Social, Inc. is based. This includes terrorism, fraud, extortion, and many types of pornography or non-consensual intimate imagery (NCII) |
