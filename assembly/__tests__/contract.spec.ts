@@ -576,7 +576,7 @@ describe("ban accounts", () => {
 		}
 
 		VMContext.setSigner_account_id(getAdminAccount());
-		expect(banAccount(inputUsername)).toBe(false);
+		expect(banAccount(inputUsername, 1)).toBe(false);
 		const userInfoUpdated = userLookup.get(inputUsername);
 		expect(userInfoUpdated).not.toBeNull();
 		// Always true
@@ -599,6 +599,8 @@ describe("ban accounts", () => {
 		VMContext.setSigner_account_id(inputAccountId);
 		setUserInfo(inputUsername);
 
+		const banClassCode: u8 = 1;
+
 		expect(userLookup.contains(inputUsername)).toBe(true);
 		const userInfo = userLookup.get(inputUsername);
 		// Always true
@@ -607,7 +609,7 @@ describe("ban accounts", () => {
 		}
 
 		VMContext.setSigner_account_id("capsuleblock.testnet");
-		expect(banAccount(inputUsername)).toBe(true);
+		expect(banAccount(inputUsername, banClassCode)).toBe(true);
 		const userInfoUpdated = userLookup.get(inputUsername);
 		expect(userInfoUpdated).not.toBeNull();
 		// Always true
@@ -620,6 +622,12 @@ describe("ban accounts", () => {
 			expect(userInfo[0]).toBe(userInfoUpdated[0]);
 			expect(userInfo[1]).toBe(userInfoUpdated[1]);
 		}
-		expect(bannedUsers.contains(inputUsername)).toBe(true);
+
+		const banInfo = bannedUsers.get(inputUsername);
+		expect(banInfo).not.toBeNull();
+		if (banInfo) {
+			expect(banInfo.length).toBe(2);
+			expect(banInfo[1]).toBe(banClassCode.toString(10));
+		}
 	});
 });
