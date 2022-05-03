@@ -277,7 +277,11 @@ export function banAccount(
 
 	const banInfo = [blockOn, classStr];
 	if (cid) {
-		banInfo.push(cid);
+		if (cid.length == 59) {
+			banInfo.push(cid);
+		} else {
+			return false
+		}
 	}
 
 	const userInfo = userLookup.get(username);
