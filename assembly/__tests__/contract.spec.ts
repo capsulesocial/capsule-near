@@ -623,6 +623,41 @@ describe("ban accounts", () => {
 		expect(bannedUsers.contains(inputUsername)).toBe(false);
 	});
 
+	it("should return an error: cid of invalid length", () => {
+		VMContext.setSigner_account_id(getAdminAccount());
+		onboardAccount(inputAccountId);
+
+		VMContext.setSigner_account_id(inputAccountId);
+		setUserInfo(inputUsername);
+
+		const banClassCode: u8 = 1;
+		const banCid =
+			"bagaaierasords4njcts6vs7qvdjfcvgnume4hqohf65zsfguprqphs3icwea";
+
+		expect(userLookup.contains(inputUsername)).toBe(true);
+		const userInfo = userLookup.get(inputUsername);
+		// Always true
+		if (userInfo) {
+			expect(userInfo.length).toBe(2);
+		}
+
+		VMContext.setSigner_account_id("capsuleblock.testnet");
+		expect(banAccount(inputUsername, banClassCode, banCid)).toBe(false);
+		const userInfoUpdated = userLookup.get(inputUsername);
+		expect(userInfoUpdated).not.toBeNull();
+		// Always true
+		if (userInfoUpdated) {
+			expect(userInfoUpdated.length).toBe(2);
+		}
+
+		// Always true
+		if (userInfo && userInfoUpdated) {
+			expect(userInfo[0]).toBe(userInfoUpdated[0]);
+			expect(userInfo[1]).toBe(userInfoUpdated[1]);
+		}
+		expect(bannedUsers.contains(inputUsername)).toBe(false);
+	});
+
 	it("should successfully ban an account", () => {
 		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
@@ -671,7 +706,7 @@ describe("ban accounts", () => {
 
 		const banClassCode: u8 = 1;
 		const banCid =
-			"bagaaierasords4njcts6vs7qvdjfcvgnume4hqohf65zsfguprqphs3icwea";
+			"bafyreigsh6jibw5a6ihiegoldaxop4vlau4r4w6dv3oruvbub65a3h42mq";
 
 		expect(userLookup.contains(inputUsername)).toBe(true);
 		const userInfo = userLookup.get(inputUsername);
