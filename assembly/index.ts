@@ -244,7 +244,6 @@ export function banAccount(
 	classCode: u8,
 	cid: string | null = null
 ): bool {
-	// TODO: validate cid length
 	const sender = Context.sender;
 	const blockOn = Context.blockTimestamp.toString(16);
 	const classStr = classCode.toString(10);
