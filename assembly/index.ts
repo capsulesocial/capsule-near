@@ -239,20 +239,56 @@ export function deactivateAccount(): bool {
 	return false;
 }
 
-export function banAccount(username: string): bool {
+export function banAccount(
+	username: string,
+	classCode: u8,
+	cid: string | null = null
+): bool {
 	const sender = Context.sender;
-	const blockOn = Context.blockTimestamp;
+	const blockOn = Context.blockTimestamp.toString(16);
+	const classStr = classCode.toString(10);
 
 	if (sender != "capsuleblock.testnet") {
 		return false;
 	}
 
+	switch (classCode) {
+		// Content deemed illegal
+		case 1:
+		// Threats of violence
+		case 2:
+		// Pornography / sexually exploitative
+		case 3:
+		// Extremely gruesome / violent content
+		case 4:
+		// Non-consensually posting confidential personal info
+		case 5:
+		// Content that is a result of software error
+		case 6:
+		// Plagiarism / impersonation
+		case 7:
+		// Spam
+		case 8:
+			break;
+		default:
+			return false;
+	}
+
+	const banInfo = [blockOn, classStr];
+	if (cid) {
+		if (cid.length == 59) {
+			banInfo.push(cid);
+		} else {
+			return false
+		}
+	}
+
 	const userInfo = userLookup.get(username);
 	if (userInfo) {
 		// Compare storage / compute costs if radix is changed to 10
-		const newList = userInfo.slice(0, 2).concat([blockOn.toString(16)]);
+		const newList = userInfo.slice(0, 2).concat([blockOn]);
 		userLookup.set(username, newList);
-		bannedUsers.set(username, true);
+		bannedUsers.set(username, banInfo);
 		return true;
 	}
 
