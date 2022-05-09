@@ -28,6 +28,10 @@ function getAdminAccount(): string {
 	return "capsule.testnet";
 }
 
+function getBanAdminAccount(): string {
+	return "capsuleblock.testnet";
+}
+
 describe("onboard test", () => {
 	afterEach(() => {
 		onboardLookup.delete(inputAccountId);
@@ -606,7 +610,7 @@ describe("ban accounts", () => {
 			expect(userInfo.length).toBe(2);
 		}
 
-		VMContext.setSigner_account_id("capsuleblock.testnet");
+		VMContext.setSigner_account_id(getBanAdminAccount());
 		expect(banAccount(inputUsername, 9)).toBe(false);
 		const userInfoUpdated = userLookup.get(inputUsername);
 		expect(userInfoUpdated).not.toBeNull();
@@ -641,7 +645,7 @@ describe("ban accounts", () => {
 			expect(userInfo.length).toBe(2);
 		}
 
-		VMContext.setSigner_account_id("capsuleblock.testnet");
+		VMContext.setSigner_account_id(getBanAdminAccount());
 		expect(banAccount(inputUsername, banClassCode, banCid)).toBe(false);
 		const userInfoUpdated = userLookup.get(inputUsername);
 		expect(userInfoUpdated).not.toBeNull();
@@ -674,7 +678,7 @@ describe("ban accounts", () => {
 			expect(userInfo.length).toBe(2);
 		}
 
-		VMContext.setSigner_account_id("capsuleblock.testnet");
+		VMContext.setSigner_account_id(getBanAdminAccount());
 		expect(banAccount(inputUsername, banClassCode)).toBe(true);
 		const userInfoUpdated = userLookup.get(inputUsername);
 		expect(userInfoUpdated).not.toBeNull();
@@ -715,7 +719,7 @@ describe("ban accounts", () => {
 			expect(userInfo.length).toBe(2);
 		}
 
-		VMContext.setSigner_account_id("capsuleblock.testnet");
+		VMContext.setSigner_account_id(getBanAdminAccount());
 		expect(banAccount(inputUsername, banClassCode, banCid)).toBe(true);
 		const userInfoUpdated = userLookup.get(inputUsername);
 		expect(userInfoUpdated).not.toBeNull();
