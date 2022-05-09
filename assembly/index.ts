@@ -249,7 +249,7 @@ export function banAccount(
 	const blockOn = Context.blockTimestamp.toString(16);
 	const classStr = classCode.toString(10);
 
-	if (sender != "capsuleblock.testnet") {
+	if (sender != "capsuleblock-alpha.testnet") {
 		return false;
 	}
 

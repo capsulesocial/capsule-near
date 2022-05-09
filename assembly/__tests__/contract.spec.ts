@@ -31,7 +31,7 @@ function getAdminAccount(): string {
 }
 
 function getBanAdminAccount(): string {
-	return "capsuleblock.testnet";
+	return "capsuleblock-alpha.testnet";
 }
 
 describe("onboard test", () => {
