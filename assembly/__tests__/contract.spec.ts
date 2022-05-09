@@ -701,6 +701,36 @@ describe("ban accounts", () => {
 		}
 	});
 
+	it("should return an error: cannot ban an already banned account", () => {
+		VMContext.setSigner_account_id(getAdminAccount());
+		onboardAccount(inputAccountId);
+
+		VMContext.setSigner_account_id(inputAccountId);
+		setUserInfo(inputUsername);
+
+		const banClassCode: u8 = 1;
+
+		VMContext.setSigner_account_id(getBanAdminAccount());
+		expect(banAccount(inputUsername, banClassCode)).toBe(true);
+
+		const banInfo = bannedUsers.get(inputUsername);
+		expect(banInfo).not.toBeNull();
+		if (banInfo) {
+			expect(banInfo.length).toBe(2);
+			expect(banInfo[1]).toBe(banClassCode.toString(10));
+		}
+
+		expect(banAccount(inputUsername, banClassCode)).toBe(false);
+
+		const banInfoUpdated = bannedUsers.get(inputUsername);
+		expect(banInfoUpdated).not.toBeNull();
+		if (banInfoUpdated && banInfo) {
+			expect(banInfoUpdated.length).toBe(2);
+			expect(banInfoUpdated[0]).toBe(banInfo[0]);
+			expect(banInfoUpdated[1]).toBe(banInfo[1]);
+		}
+	});
+
 	it("should successfully ban an account with cid of delistable content", () => {
 		VMContext.setSigner_account_id(getAdminAccount());
 		onboardAccount(inputAccountId);
