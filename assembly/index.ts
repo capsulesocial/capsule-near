@@ -252,6 +252,10 @@ export function banAccount(
 		return false;
 	}
 
+	if (bannedUsers.contains(username)) {
+		return false;
+	}
+
 	switch (classCode) {
 		// Content deemed illegal
 		case 1:
@@ -293,4 +297,8 @@ export function banAccount(
 	}
 
 	return false;
+}
+
+export function bannedAccountInfo(username: string): Array<string> | null {
+	return bannedUsers.get(username);
 }
