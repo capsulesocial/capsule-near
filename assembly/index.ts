@@ -279,7 +279,7 @@ export function banAccount(
 		if (cid.length == 59) {
 			banInfo.push(cid);
 		} else {
-			return false
+			return false;
 		}
 	}
 
