@@ -294,3 +294,7 @@ export function banAccount(
 
 	return false;
 }
+
+export function bannedAccountInfo(username: string): Array<string> | null {
+	return bannedUsers.get(username);
+}
