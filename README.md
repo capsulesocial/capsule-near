@@ -90,14 +90,12 @@ When a user registers their account on capsule, the client calls `setUserInfo` f
 | `7` | Plagiarism or the impersonation of any individual, group, or organization |
 | `8` | Spam is also considered delistable content. Spam may take many forms, including but not limited to: repeated, unwanted, and/or unsolicited actions, automated or manual, that negatively affect users, groups, and/or the Blogchain platform itself; Content that is designed to further unlawful acts (such as phishing) or mislead recipients as to the source of the material (such as spoofing); Commercially-motivated spam that typically aims to drive traffic from Blogchain over to another website, service or initiative through backlinking or other inauthentic methods; Inauthentic engagements that try to make channels or content appear more popular than they are; Coordinated activity that attempts to artificially influence opinion through the use of multiple accounts, fake accounts, and/or scripting or automation |
 
-## Legend: return values from updatePrivateSub
+## Legend: return values from setPrivateSub
 
-When a user sets up a subscription on capsule, capsule-server calls `updatePrivateSub` function of the contract. `updatePrivateSub` returns an integer between 0 and 3, where each integer means the following:
+When a user sets up a subscription on capsule, capsule-server calls `setPrivateSub` function of the contract. `setPrivateSub` returns an integer between 0 and 2, where each integer means the following:
 
 | Return value | Description                                                       |
 | :----------: | ----------------------------------------------------------------- |
 |     `0`      | Transaction sender not permitted to initiate private subscription |
 |     `1`      | Successfully initiated private subscription for a username        |
 |     `2`      | User does not exist                                               |
-|     `3`      | Private subscription for the user has already been initiated  |
-| `4` | Cannot disable subscription if it's not enabled|
