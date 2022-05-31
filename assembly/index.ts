@@ -304,7 +304,7 @@ export function bannedAccountInfo(username: string): Array<string> | null {
 	return bannedUsers.get(username);
 }
 
-export function updatePrivateSub(username: string, set: bool): u8 {
+export function setPrivateSub(username: string): u8 {
 	const sender = Context.sender;
 	if (sender != "capsule.testnet") {
 		return 0;
@@ -312,19 +312,7 @@ export function updatePrivateSub(username: string, set: bool): u8 {
 	if (!userLookup.contains(username)) {
 		return 2;
 	}
-
-	if (set) {
-		if (privateSub.contains(username)) {
-			return 3;
-		}
-		privateSub.set(username, true);
-		return 1;
-	}
-
-	if (!privateSub.contains(username)) {
-		return 4;
-	}
-	privateSub.delete(username);
+	privateSub.set(username, true);
 	return 1;
 }
 
