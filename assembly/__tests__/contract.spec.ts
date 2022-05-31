@@ -5,12 +5,14 @@ import {
 	onboardAccount,
 	requestSetUserInfo,
 	setUserInfo,
+	updatePrivateSub,
 	verifySetUserInfo,
 } from "..";
 import {
 	accountLookup,
 	bannedUsers,
 	onboardLookup,
+	privateSub,
 	userLookup,
 	userRequestLookup,
 } from "../model";
@@ -771,5 +773,84 @@ describe("ban accounts", () => {
 			expect(banInfo[1]).toBe(banClassCode.toString(10));
 			expect(banInfo[2]).toBe(banCid);
 		}
+	});
+});
+
+describe("Active/Deactivate private subscriptions", () => {
+	afterEach(() => {
+		onboardLookup.delete(inputAccountId);
+		accountLookup.delete(inputAccountId);
+		userLookup.delete(inputUsername);
+		bannedUsers.delete(inputUsername);
+	});
+
+	it("should return an error: insufficient permissions to set private subscription", () => {
+		VMContext.setSigner_account_id(getAdminAccount());
+		onboardAccount(inputAccountId);
+
+		VMContext.setSigner_account_id(inputAccountId);
+		setUserInfo(inputUsername);
+
+		VMContext.setSigner_account_id("test.testnet");
+		expect(updatePrivateSub(inputUsername, true)).toBe(0);
+		expect(privateSub.contains(inputUsername)).toBe(false);
+	});
+
+	it("should return an error: username does not exist", () => {
+		VMContext.setSigner_account_id(getAdminAccount());
+		expect(updatePrivateSub(inputUsername, true)).toBe(2);
+		expect(privateSub.contains(inputUsername)).toBe(false);
+	});
+
+	it("should successfully enable private subscriptions for a user", () => {
+		VMContext.setSigner_account_id(getAdminAccount());
+		onboardAccount(inputAccountId);
+
+		VMContext.setSigner_account_id(inputAccountId);
+		setUserInfo(inputUsername);
+
+		VMContext.setSigner_account_id(getAdminAccount());
+		expect(updatePrivateSub(inputUsername, true)).toBe(1);
+		expect(privateSub.contains(inputUsername)).toBe(true);
+	});
+
+	it("should return an error: cannot enable private subscription twice", () => {
+		VMContext.setSigner_account_id(getAdminAccount());
+		onboardAccount(inputAccountId);
+
+		VMContext.setSigner_account_id(inputAccountId);
+		setUserInfo(inputUsername);
+
+		VMContext.setSigner_account_id(getAdminAccount());
+		updatePrivateSub(inputUsername, true);
+
+		expect(updatePrivateSub(inputUsername, true)).toBe(3);
+		expect(privateSub.contains(inputUsername)).toBe(true);
+	});
+
+	it("should successfully disable private subscription of a user", () => {
+		VMContext.setSigner_account_id(getAdminAccount());
+		onboardAccount(inputAccountId);
+
+		VMContext.setSigner_account_id(inputAccountId);
+		setUserInfo(inputUsername);
+
+		VMContext.setSigner_account_id(getAdminAccount());
+		updatePrivateSub(inputUsername, true);
+
+		expect(updatePrivateSub(inputUsername, false)).toBe(1);
+		expect(privateSub.contains(inputUsername)).toBe(false);
+	});
+
+	it("should return an error: cannot disable subscription if not enabled", () => {
+		VMContext.setSigner_account_id(getAdminAccount());
+		onboardAccount(inputAccountId);
+
+		VMContext.setSigner_account_id(inputAccountId);
+		setUserInfo(inputUsername);
+
+		VMContext.setSigner_account_id(getAdminAccount());
+		expect(updatePrivateSub(inputUsername, false)).toBe(4);
+		expect(privateSub.contains(inputUsername)).toBe(false);
 	});
 });
