@@ -6,6 +6,7 @@ import {
 	blockList,
 	userRequestLookup,
 	bannedUsers,
+	privateSub,
 } from "./model";
 
 export function setUserInfo(username: string): u8 {
@@ -301,4 +302,32 @@ export function banAccount(
 
 export function bannedAccountInfo(username: string): Array<string> | null {
 	return bannedUsers.get(username);
+}
+
+export function updatePrivateSub(username: string, set: bool): u8 {
+	const sender = Context.sender;
+	if (sender != "capsule.testnet") {
+		return 0;
+	}
+	if (!userLookup.contains(username)) {
+		return 2;
+	}
+
+	if (set) {
+		if (privateSub.contains(username)) {
+			return 3;
+		}
+		privateSub.set(username, true);
+		return 1;
+	}
+
+	if (!privateSub.contains(username)) {
+		return 4;
+	}
+	privateSub.delete(username);
+	return 1;
+}
+
+export function hasPrivateSub(username: string): bool {
+	return privateSub.contains(username);
 }

@@ -10,3 +10,4 @@ blockList.add("admin");
 blockList.add("support");
 
 export const bannedUsers = new PersistentMap<string, Array<string>>("b");
+export const privateSub = new PersistentMap<string, bool>("s");
