@@ -306,7 +306,7 @@ export function bannedAccountInfo(username: string): Array<string> | null {
 
 export function setPrivateSub(username: string): u8 {
 	const sender = Context.sender;
-	if (sender != "capsule.testnet") {
+	if (sender != "capsule-alpha.testnet") {
 		return 0;
 	}
 	if (!userLookup.contains(username)) {
