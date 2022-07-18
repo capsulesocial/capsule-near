@@ -27,11 +27,11 @@ const blistedUserThree: string = "support";
 const blistedUserCapsule: string = "capsuleoff";
 
 function getAdminAccount(): string {
-	return "capsule.testnet";
+	return "capsule-onboard.near";
 }
 
 function getBanAdminAccount(): string {
-	return "capsuleblock.testnet";
+	return "capsuleblock.near";
 }
 
 describe("onboard test", () => {

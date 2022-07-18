@@ -65,7 +65,7 @@ export function getAccountInfo(accountId: string): Array<string> | null {
 
 export function onboardAccount(accountId: string): u8 {
 	const sender = Context.sender;
-	if (sender != "capsule.testnet") {
+	if (sender != "capsule-onboard.near") {
 		// non-admin accounts are not allowed to onboard
 		return 0;
 	}
@@ -189,7 +189,7 @@ export function requestSetUserInfo(username: string): u8 {
 
 export function verifySetUserInfo(username: string): u8 {
 	const sender = Context.sender;
-	if (sender != "capsule.testnet") {
+	if (sender != "capsule-onboard.near") {
 		// Non-admin accounts are not allowed to verify
 		return 0;
 	}
@@ -249,7 +249,7 @@ export function banAccount(
 	const blockOn = Context.blockTimestamp.toString(16);
 	const classStr = classCode.toString(10);
 
-	if (sender != "capsuleblock.testnet") {
+	if (sender != "capsuleblock.near") {
 		return false;
 	}
 
@@ -306,7 +306,7 @@ export function bannedAccountInfo(username: string): Array<string> | null {
 
 export function setPrivateSub(username: string): u8 {
 	const sender = Context.sender;
-	if (sender != "capsule.testnet") {
+	if (sender != "capsule-onboard.near") {
 		return 0;
 	}
 	if (!userLookup.contains(username)) {
