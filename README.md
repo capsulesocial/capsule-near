@@ -1,6 +1,6 @@
 # Capsule NEAR
 
-A repository to store NEAR smart contracts used by Capsule
+A repository to store NEAR smart contracts used by [Blogchain](https://blogchain.app)
 
 ## Requirements
 
