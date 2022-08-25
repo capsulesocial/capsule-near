@@ -99,3 +99,7 @@ When a user sets up a subscription on capsule, capsule-server calls `setPrivateS
 |     `0`      | Transaction sender not permitted to initiate private subscription |
 |     `1`      | Successfully initiated private subscription for a username        |
 |     `2`      | User does not exist                                               |
+
+## License
+
+[GNU AFFERO GENERAL PUBLIC LICENSE 3](./LICENSE)
