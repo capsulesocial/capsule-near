@@ -1,0 +1,18 @@
+{
+  "name": "capsule-near-js",
+  "version": "1.0.0",
+  "license": "(MIT AND Apache-2.0)",
+  "scripts": {
+    "deploy": "cd contract && yarn run deploy",
+    "build": "yarn run build:contract",
+    "build:contract": "cd contract && yarn run build",
+    "test": "yarn run test:unit && yarn run test:integration",
+    "test:unit": "cd contract && yarn test",
+    "test:integration": "cd integration-tests && yarn test -- -- \"./contract/build/hello_near.wasm\"",
+    "postinstall": "echo no frontend && cd integration-tests && yarn install && cd .. && cd contract && yarn install"
+  },
+  "devDependencies": {
+    "near-cli": "^3.3.0"
+  },
+  "dependencies": {}
+}
