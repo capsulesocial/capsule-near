@@ -1,101 +1,100 @@
-# Capsule NEAR
+near-blank-project
+==================
 
-A repository to store NEAR smart contracts used by Capsule
+This app was initialized with [create-near-app]
 
-## Requirements
 
-- [NEAR CLI](https://github.com/near/near-cli) - to deploy the smart contract
-  - `npm install -g near-cli` (globally installs NEAR CLI)
+Quick Start
+===========
 
-## Installation
+If you haven't installed dependencies during setup:
 
-`yarn install` - Installs all dependencies
+    npm install
 
-> **Warning**: One of the indirect dependencies of this repo -- `near-vm` does not support Darwin ARM64, so this repo can't be installed in your M1 as of today (20th October, 2021)
 
-## Build Smart Contract
+Build and deploy your contract to TestNet with a temporary dev account:
 
-To build the contract, run `yarn asb` or `yarn asb build`. The .wasm file after successful build is located at: `build/release/capsule-near.wasm`
+    npm run deploy
 
-## Deploy Smart Contract
+Test your contract:
 
-Make sure you have installed [NEAR CLI](https://github.com/near/near-cli) before moving any further.
+    npm test
 
-For purposes of testing, you can create a dev-account on NEAR testnet and deploy the smart contract. To do this, simply run: `near dev-deploy build/release/capsule-near.wasm`
+If you have a frontend, run `npm start`. This will run a dev server.
 
-If you want to deploy it on a named testnet or mainnet account, run:
 
-1. `near login` - login to the account you want to deploy the contract in. On successful login, a full access key is stored in `~/.near-credentials/` directory.
-2. `near deploy --contractName=<your_NEAR_account_id> --keyPath=<absolute_path_to_near_credentials_file> --wasmFile=<wasm_file_to_deploy>`
+Exploring The Code
+==================
 
-**Example**: `near deploy --contractName=dev-1627894343033-9726641 --keyPath=/home/tomash/.near-credentials/testnet/dev-1627894343033-9726641.json --wasmFile=./build/release/capsule-near.json`
+1. The smart-contract code lives in the `/contract` folder. See the README there for
+   more info. In blockchain apps the smart contract is the "backend" of your app.
+2. The frontend code lives in the `/frontend` folder. `/frontend/index.html` is a great
+   place to start exploring. Note that it loads in `/frontend/index.js`,
+   this is your entrypoint to learn how the frontend connects to the NEAR blockchain.
+3. Test your contract: `npm test`, this will run the tests in `integration-tests` directory.
 
-## Legend: return values from setUserInfo
 
-When a user registers their account on capsule, the client calls `setUserInfo` function of the contract. `setUserInfo` returns an integer between 1 and 5, where each integer means the following:
+Deploy
+======
 
-| Return value | Description                                                                        |
-| :----------: | ---------------------------------------------------------------------------------- |
-|     `1`      | Successful user-info update / registration                                         |
-|     `2`      | Length of given username is less than the minimum permissible length = 3           |
-|     `3`      | Username already exists, and is owned by a different NEAR account                  |
-|     `4`      | Length of given username exceeds maximum permissible length = 18<br>               |
-|     `5`      | NEAR account associated with the transaction is already linked to another username |
-|     `6`      | AccountID does not have a valid invite code                                        |
-|     `7`      | Invalid username; username is blocklisted                                          |
-|     `8`      | Invalid username; username contains invalid characters                             |
+Every smart contract in NEAR has its [own associated account][NEAR accounts]. 
+When you run `npm run deploy`, your smart contract gets deployed to the live NEAR TestNet with a temporary dev account.
+When you're ready to make it permanent, here's how:
 
-## Legend: return values from onboardAccount
 
-| Return value | Description                                                                             |
-| :----------: | --------------------------------------------------------------------------------------- |
-|     `0`      | Transaction sender not permitted to onboard account                                     |
-|     `1`      | Successfully onboarded an accountId, they can proceed with registration ie. setUserInfo |
-|     `2`      | Invalid accountId                                                                       |
-|     `3`      | accountId has already been onboarded                                                    |
+Step 0: Install near-cli (optional)
+-------------------------------------
 
-## Legend: return values from requestSetUserInfo
+[near-cli] is a command line interface (CLI) for interacting with the NEAR blockchain. It was installed to the local `node_modules` folder when you ran `npm install`, but for best ergonomics you may want to install it globally:
 
-| Return value | Description                                                                        |
-| :----------: | ---------------------------------------------------------------------------------- |
-|     `1`      | Successful user-info update / registration request                                 |
-|     `2`      | Length of given username is less than the minimum permissible length = 3           |
-|     `3`      | Username already exists, and is owned by a different NEAR account                  |
-|     `4`      | Length of given username exceeds maximum permissible length = 18<br>               |
-|     `5`      | NEAR account associated with the transaction is already linked to another username |
-|     `6`      | AccountID does not have a valid invite code                                        |
-|     `7`      | Invalid username; username is **not** blocklisted                                  |
-|     `8`      | Invalid username; username contains invalid characters                             |
+    npm install --global near-cli
 
-## Legend: return values from verifySetUserInfo
+Or, if you'd rather use the locally-installed version, you can prefix all `near` commands with `npx`
 
-| Return value | Description                                                                           |
-| :----------: | ------------------------------------------------------------------------------------- |
-|     `0`      | Transaction sender not permitted to onboard account                                   |
-|     `1`      | Successful user-info update / registration                                            |
-|     `2`      | Input username doesn't exist in the list of requested usernames to register           |
-|     `3`      | Username already exists, and is owned by a different NEAR account                     |
-|     `5`      | NEAR account associated with the input username is already linked to another username |
+Ensure that it's installed with `near --version` (or `npx near --version`)
 
-## Legend: classification code for banning
 
-| Code | Description                                                                                                                                                                                                                           |
-| :--: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `1`  | Content that is deemed illegal under United States law or Delaware state law, where Capsule Social, Inc. is based. This includes terrorism, fraud, extortion, and many types of pornography or non-consensual intimate imagery (NCII) |
-| `2` | Specifically targeted, real threats of violence or incitement to violence, including wishing or hoping that someone experiences physical harm. Persistent, malicious, targeted harassment or incitement to harassment. Promoting or encouraging suicide |
-| `3` | Pornography or sexually exploitative content. We do allow depictions of nudity for artistic, journalistic, or related purposes, as well as erotic literature. Users may be asked to self-identify non-porn adult content and may have their accounts locked if they do not identify content correctly |
-| `4` | Extremely gruesome, violent content, or content glorifying violence |
-| `5` | Non-consensually posting an individual’s confidential personal information such as, for example, home address, passport number, or social security number (”doxxing”) |
-| `6` | Any content that is the result of a software or platform error or vulnerability |
-| `7` | Plagiarism or the impersonation of any individual, group, or organization |
-| `8` | Spam is also considered delistable content. Spam may take many forms, including but not limited to: repeated, unwanted, and/or unsolicited actions, automated or manual, that negatively affect users, groups, and/or the Blogchain platform itself; Content that is designed to further unlawful acts (such as phishing) or mislead recipients as to the source of the material (such as spoofing); Commercially-motivated spam that typically aims to drive traffic from Blogchain over to another website, service or initiative through backlinking or other inauthentic methods; Inauthentic engagements that try to make channels or content appear more popular than they are; Coordinated activity that attempts to artificially influence opinion through the use of multiple accounts, fake accounts, and/or scripting or automation |
+Step 1: Create an account for the contract
+------------------------------------------
 
-## Legend: return values from setPrivateSub
+Each account on NEAR can have at most one contract deployed to it. If you've already created an account such as `your-name.testnet`, you can deploy your contract to `near-blank-project.your-name.testnet`. Assuming you've already created an account on [NEAR Wallet], here's how to create `near-blank-project.your-name.testnet`:
 
-When a user sets up a subscription on capsule, capsule-server calls `setPrivateSub` function of the contract. `setPrivateSub` returns an integer between 0 and 2, where each integer means the following:
+1. Authorize NEAR CLI, following the commands it gives you:
 
-| Return value | Description                                                       |
-| :----------: | ----------------------------------------------------------------- |
-|     `0`      | Transaction sender not permitted to initiate private subscription |
-|     `1`      | Successfully initiated private subscription for a username        |
-|     `2`      | User does not exist                                               |
+      near login
+
+2. Create a subaccount (replace `YOUR-NAME` below with your actual account name):
+
+      near create-account near-blank-project.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
+
+Step 2: deploy the contract
+---------------------------
+
+Use the CLI to deploy the contract to TestNet with your account ID.
+Replace `PATH_TO_WASM_FILE` with the `wasm` that was generated in `contract` build directory.
+
+    near deploy --accountId near-blank-project.YOUR-NAME.testnet --wasmFile PATH_TO_WASM_FILE
+
+
+Step 3: set contract name in your frontend code
+-----------------------------------------------
+
+Modify the line in `src/config.js` that sets the account name of the contract. Set it to the account id you used above.
+
+    const CONTRACT_NAME = process.env.CONTRACT_NAME || 'near-blank-project.YOUR-NAME.testnet'
+
+
+
+Troubleshooting
+===============
+
+On Windows, if you're seeing an error containing `EPERM` it may be related to spaces in your path. Please see [this issue](https://github.com/zkat/npx/issues/209) for more details.
+
+
+  [create-near-app]: https://github.com/near/create-near-app
+  [Node.js]: https://nodejs.org/en/download/package-manager/
+  [jest]: https://jestjs.io/
+  [NEAR accounts]: https://docs.near.org/concepts/basics/account
+  [NEAR Wallet]: https://wallet.testnet.near.org/
+  [near-cli]: https://github.com/near/near-cli
+  [gh-pages]: https://github.com/tschaub/gh-pages
